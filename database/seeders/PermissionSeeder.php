@@ -15,10 +15,22 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         Permission::insert([
-            ['name' => 'role.create',],
-            ['name' => 'role.assign',],
-            ['name' => 'permission.assign',],
-            ['name' => 'user.create',]
+            [
+                'name' => 'role.create',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'role.assign',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'permission.assign',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'user.create',
+                'guard_name' => 'api',
+            ]
         ]);
 
     }
