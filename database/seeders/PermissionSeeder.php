@@ -28,9 +28,14 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'api',
             ],
             [
+                'name' => 'permission.remove',
+                'guard_name' => 'api',
+            ],
+            [
                 'name' => 'user.create',
                 'guard_name' => 'api',
-            ]
+            ],
+
         ]);
 
     }

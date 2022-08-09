@@ -113,6 +113,10 @@ class RoleController extends Controller
 
     public function assignPermission(Request $request)
     {
+
+        if (!auth()->user()->can('permission.assign')) {
+            return $this->responseWithNotAllowed();
+        }
         $this->validate($request, [
             'role' => 'required',
             'permissions' => 'required',
@@ -130,6 +134,10 @@ class RoleController extends Controller
 
     public function removePermission(Request $request)
     {
+        if (!auth()->user()->can('permission.remove')) {
+            return $this->responseWithNotAllowed();
+        }
+
         $this->validate($request, [
             'role' => 'required',
             'permissions' => 'required',
@@ -147,6 +155,10 @@ class RoleController extends Controller
 
     public function assignRole(Request $request)
     {
+        if (!auth()->user()->can('role.assign')) {
+            return $this->responseWithNotAllowed();
+        }
+
         $this->validate($request, [
             'user' => 'required',
             'role' => 'required',
