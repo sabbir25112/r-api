@@ -52,6 +52,8 @@ Route::group([
     Route::post('assign-role', 'RoleController@assignRole');
 
 
-
+    Route::resource('city', 'CityController');
+    Route::get('city-restore', 'CityController@restoreAll');
+    Route::get('trashed-city', 'CityController@showTrashed');
 
 });

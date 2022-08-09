@@ -35,6 +35,26 @@ class PermissionSeeder extends Seeder
                 'name' => 'user.create',
                 'guard_name' => 'api',
             ],
+            [
+                'name' => 'city.create',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'city.update',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'city.delete',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'city.restore',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'show.trashed.city',
+                'guard_name' => 'api',
+            ],
 
         ]);
 
