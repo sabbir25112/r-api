@@ -24,6 +24,12 @@ Route::get('/', function(){
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::group([
+    'middleware' => ['api'],
+    'namespace' => 'App\Http\Controllers',
+], function ($router) {
+    Route::post('auth/login', 'AuthController@login');
+});
 
 Route::group([
     'middleware' => ['api', 'auth'],
@@ -31,7 +37,7 @@ Route::group([
 ], function ($router) {
 
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('login', 'AuthController@login');
+
         Route::post('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
         Route::get('me', 'AuthController@me');
@@ -42,6 +48,7 @@ Route::group([
     Route::resource('roles', 'RoleController');
     Route::get('permissions' , 'RoleController@permissions');
     Route::post('assign-permission', 'RoleController@assignPermission');
+    Route::post('remove-permission', 'RoleController@removePermission');
     Route::post('assign-role', 'RoleController@assignRole');
 
 

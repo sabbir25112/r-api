@@ -122,7 +122,25 @@ class RoleController extends Controller
         $permissions = Permission::whereIn('id', $request->permissions)
             ->get();
 
+
         $role->givePermissionTo($permissions);
+        return $this->setStatusCode(200)
+            ->responseWithSuccess();
+    }
+
+    public function removePermission(Request $request)
+    {
+        $this->validate($request, [
+            'role' => 'required',
+            'permissions' => 'required',
+        ]);
+
+        $role = Role::find($request->role);
+        $permissions = Permission::whereIn('id', $request->permissions)
+            ->get();
+
+
+        $role->revokePermissionTo($permissions);
         return $this->setStatusCode(200)
             ->responseWithSuccess();
     }
