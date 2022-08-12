@@ -56,4 +56,6 @@ Route::group([
     Route::get('city-restore', 'CityController@restoreAll');
     Route::get('trashed-city', 'CityController@showTrashed');
 
+    Route::resource('zone', 'ZoneController');
+
 });

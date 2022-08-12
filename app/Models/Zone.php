@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\CommonScopeTrait;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class City extends Model
+class Zone extends Model
 {
     use HasFactory, CommonScopeTrait, SoftDeletes;
 
     protected $fillable = [
         'name',
+        'city_id',
     ];
 
-    public function zones()
+    public function cities()
     {
-        return $this->hasMany(Zone::class);
+        return $this->belongsTo(City::class, 'city_id');
     }
 }

@@ -23,6 +23,7 @@ class PermissionSeeder extends Seeder
                 'name' => 'role.assign',
                 'guard_name' => 'api',
             ],
+
             [
                 'name' => 'permission.assign',
                 'guard_name' => 'api',
@@ -31,10 +32,12 @@ class PermissionSeeder extends Seeder
                 'name' => 'permission.remove',
                 'guard_name' => 'api',
             ],
+
             [
                 'name' => 'user.create',
                 'guard_name' => 'api',
             ],
+
             [
                 'name' => 'city.create',
                 'guard_name' => 'api',
@@ -53,6 +56,19 @@ class PermissionSeeder extends Seeder
             ],
             [
                 'name' => 'show.trashed.city',
+                'guard_name' => 'api',
+            ],
+
+            [
+                'name' => 'zone.create',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'zone.update',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'zone.delete',
                 'guard_name' => 'api',
             ],
 
