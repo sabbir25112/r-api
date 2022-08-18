@@ -103,7 +103,10 @@ class ZoneController extends Controller
         ]);
 
         try {
-            $zone->update($request->all());
+            $zone->update([
+                'name' => $request->name,
+                'city_id' => $request->city_id,
+            ]);
             return $this->setStatusCode(200)
                         ->setMessage("Zone Updated Successfully")
                         ->setResourceName('zone')
@@ -132,7 +135,6 @@ class ZoneController extends Controller
             return $this->setStatusCode(200)
                 ->setMessage("Zone Deleted Successfully");
         } catch (\Exception $exception) {
-            dd($exception);
             return $this->setStatusCode(500)
                         ->setMessage($exception->getMessage())
                         ->responseWithError();

@@ -88,7 +88,7 @@ class CityController extends Controller
         ]);
 
         try {
-            $city->update($request->all());
+            $city->update(['name' => $request->name]);
             return $this->setStatusCode(200)
                         ->setMessage("City Updated Successfully")
                         ->setResourceName('city')
@@ -117,32 +117,31 @@ class CityController extends Controller
             return $this->setStatusCode(200)
                 ->setMessage("City Deleted Successfully");
         } catch (\Exception $exception) {
-            dd($exception);
             return $this->setStatusCode(500)
                         ->setMessage($exception->getMessage())
                         ->responseWithError();
         }
     }
 
-    public function showTrashed()
+    public function showTrashed(City $city)
     {
         if (!auth()->user()->can('show.trashed.city')) {
             return $this->responseWithNotAllowed();
         }
-        $trashedCitites = City::onlyTrashed()->limitPaginate();
+        $trashedCitites = $city->onlyTrashed()->limitPaginate();
         return $this->setStatusCode(200)
                     ->setMessage("Trashed Cities Fetch Successfully")
                     ->setResourceName('trashed_cities')
                     ->responseWithCollection($trashedCitites);
     }
 
-        public function restoreAll()
+    public function restoreAll(City $city)
     {
         if (!auth()->user()->can('city.restore')) {
             return $this->responseWithNotAllowed();
         }
 
-        $restoredCity = City::onlyTrashed()->restore();
+        $city->onlyTrashed()->restore();
         return $this->setStatusCode(200)
                     ->setMessage("All Cities Restored Successfully");
     }

@@ -72,6 +72,19 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'api',
             ],
 
+            [
+                'name' => 'merchant.create',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'merchant.update',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'merchant.delete',
+                'guard_name' => 'api',
+            ],
+
         ]);
 
     }

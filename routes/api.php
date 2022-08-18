@@ -58,4 +58,6 @@ Route::group([
 
     Route::resource('zone', 'ZoneController');
 
+    Route::resource('merchant', 'MerchantController');
+
 });
