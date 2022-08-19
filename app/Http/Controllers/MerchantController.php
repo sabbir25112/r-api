@@ -48,10 +48,10 @@ class MerchantController extends Controller
         try {
             $merchant = Merchant::create(
                 [
-                    'name' => $request->name,
-                    'mobile' => $request->mobile,
-                    'website' => $request->website,
-                    'fb_page' => $request->fb_page,
+                    'name'      => $request->name,
+                    'mobile'    => $request->mobile,
+                    'website'   => $request->website,
+                    'fb_page'   => $request->fb_page,
                 ]);
             return $this->setStatusCode(200)
                 ->setMessage("Merchant Created Successfully")
@@ -106,10 +106,10 @@ class MerchantController extends Controller
         try {
             $merchant->update(
                 [
-                    'name' => $request->name,
-                    'mobile' => $request->mobile,
-                    'website' => $request->website,
-                    'fb_page' => $request->fb_page,
+                    'name'      => $request->name,
+                    'mobile'    => $request->mobile,
+                    'website'   => $request->website,
+                    'fb_page'   => $request->fb_page,
                 ]);
             return $this->setStatusCode(200)
                 ->setMessage("Merchant Updated Successfully")

@@ -19,4 +19,9 @@ class City extends Model
     {
         return $this->hasMany(Zone::class);
     }
+
+    public function parcelOrders()
+    {
+        return $this->hasMany(ParcelOrder::class);
+    }
 }

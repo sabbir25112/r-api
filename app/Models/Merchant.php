@@ -17,4 +17,9 @@ class Merchant extends Model
         'website',
         'fb_page',
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

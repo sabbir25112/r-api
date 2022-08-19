@@ -60,4 +60,6 @@ Route::group([
 
     Route::resource('merchant', 'MerchantController');
 
+    Route::resource('order', 'OrderController');
+
 });

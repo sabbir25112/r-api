@@ -85,6 +85,19 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'api',
             ],
 
+            [
+                'name' => 'order.create',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'order.update',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'order.delete',
+                'guard_name' => 'api',
+            ],
+
         ]);
 
     }
