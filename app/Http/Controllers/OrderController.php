@@ -46,8 +46,8 @@ class OrderController extends Controller
             return $this->responseWithNotAllowed();
         }
 
-        $PARCEL_ORDER_DOT = 'parcel_orders.*.';
-        $PARCEL_DOT = 'parcels.*.';
+        $PARCEL_ORDER_DOT   = 'parcel_orders.*.';
+        $PARCEL_DOT         = 'parcels.*.';
 
         $this->validate($request, [
             // Order Validation
@@ -111,14 +111,14 @@ class OrderController extends Controller
 
             DB::commit();
             return $this->setStatusCode(200)
-                ->setMessage("Order Created Successfully")
-                ->setResourceName('order')
-                ->responseWithItem($order);
+                        ->setMessage("Order Created Successfully")
+                        ->setResourceName('order')
+                        ->responseWithItem($order);
         } catch (\Exception $exception) {
             DB::rollBack();
             return $this->setStatusCode(500)
-                ->setMessage($exception->getMessage())
-                ->responseWithError();
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
         }
     }
 
@@ -130,7 +130,19 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        $order_info = $order->with('parcelOrders.parcels')
+                            ->get();
+
+        return $this->setStatusCode(200)
+                    ->setMessage("Order Fetch Successfully")
+                    ->setResourceName('order_info')
+                    ->responseWithItem($order_info);
+    }
+
+
+    public function showParcel(ParcelOrder $parcel_order, $parcel_order_id)
+    {
+        return $parcel_order->with('parcels')->find($parcel_order_id);
     }
 
     /**

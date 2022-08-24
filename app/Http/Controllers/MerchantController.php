@@ -16,9 +16,9 @@ class MerchantController extends Controller
     {
         $merchants = Merchant::limitPaginate();
         return $this->setStatusCode(200)
-            ->setMessage("Merchants Fetch Successfully")
-            ->setResourceName('merchants')
-            ->responseWithCollection($merchants);
+                    ->setMessage("Merchants Fetch Successfully")
+                    ->setResourceName('merchants')
+                    ->responseWithCollection($merchants);
     }
 
     /**
@@ -54,13 +54,13 @@ class MerchantController extends Controller
                     'fb_page'   => $request->fb_page,
                 ]);
             return $this->setStatusCode(200)
-                ->setMessage("Merchant Created Successfully")
-                ->setResourceName('merchant')
-                ->responseWithItem($merchant);
+                        ->setMessage("Merchant Created Successfully")
+                        ->setResourceName('merchant')
+                        ->responseWithItem($merchant);
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
-                ->setMessage($exception->getMessage())
-                ->responseWithError();
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
         }
     }
 
@@ -112,13 +112,13 @@ class MerchantController extends Controller
                     'fb_page'   => $request->fb_page,
                 ]);
             return $this->setStatusCode(200)
-                ->setMessage("Merchant Updated Successfully")
-                ->setResourceName('merchant')
-                ->responseWithItem($merchant);
+                        ->setMessage("Merchant Updated Successfully")
+                        ->setResourceName('merchant')
+                        ->responseWithItem($merchant);
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
-                ->setMessage($exception->getMessage())
-                ->responseWithError();
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
         }
     }
 
@@ -140,8 +140,8 @@ class MerchantController extends Controller
                         ->setMessage("Merchant Deleted Successfully");
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
-                ->setMessage($exception->getMessage())
-                ->responseWithError();
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
         }
     }
 }

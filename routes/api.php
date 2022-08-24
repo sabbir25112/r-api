@@ -61,5 +61,6 @@ Route::group([
     Route::resource('merchant', 'MerchantController');
 
     Route::resource('order', 'OrderController');
+    Route::get('parcel-order/{parcel_order_id}', 'OrderController@showParcel');
 
 });

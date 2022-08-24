@@ -43,13 +43,13 @@ class ZoneController extends Controller
             return $this->responseWithNotAllowed();
         }
         $this->validate($request, [
-            'name' => 'required',
-            'city_id' => 'required',
+            'name'      => 'required',
+            'city_id'   => 'required',
         ]);
         try {
             $zone = Zone::create([
-                'name' => $request->name,
-                'city_id' => $request->city_id,
+                'name'      => $request->name,
+                'city_id'   => $request->city_id,
             ]);
             return $this->setStatusCode(200)
                         ->setMessage("Zone Created Successfully")
@@ -98,14 +98,14 @@ class ZoneController extends Controller
         }
 
         $this->validate($request, [
-            'name' => 'required',
-            'city_id' => 'required',
+            'name'      => 'required',
+            'city_id'   => 'required',
         ]);
 
         try {
             $zone->update([
-                'name' => $request->name,
-                'city_id' => $request->city_id,
+                'name'      => $request->name,
+                'city_id'   => $request->city_id,
             ]);
             return $this->setStatusCode(200)
                         ->setMessage("Zone Updated Successfully")
@@ -133,7 +133,7 @@ class ZoneController extends Controller
         try {
             $zone->delete();
             return $this->setStatusCode(200)
-                ->setMessage("Zone Deleted Successfully");
+                        ->setMessage("Zone Deleted Successfully");
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
                         ->setMessage($exception->getMessage())

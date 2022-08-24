@@ -19,9 +19,9 @@ class RoleController extends Controller
     {
         $roles = Role::with('permissions')->limitPaginate();
         return $this->setStatusCode(200)
-            ->setMessage("Roles Fetch Successfully")
-            ->setResourceName('roles')
-            ->responseWithCollection($roles);
+                    ->setMessage("Roles Fetch Successfully")
+                    ->setResourceName('roles')
+                    ->responseWithCollection($roles);
     }
 
     /**
@@ -42,17 +42,17 @@ class RoleController extends Controller
         try {
             $role = Role::create(['name' => $request->name]);
             return $this->setStatusCode(200)
-                ->setMessage("Role Created Successfully")
-                ->setResourceName('role')
-                ->responseWithItem($role);
+                        ->setMessage("Role Created Successfully")
+                        ->setResourceName('role')
+                        ->responseWithItem($role);
         } catch (RoleAlreadyExists $exception) {
             return $this->setStatusCode(400)
-                ->setMessage("Role Already Exists")
-                ->responseWithError();
+                        ->setMessage("Role Already Exists")
+                        ->responseWithError();
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
-                ->setMessage($exception->getMessage())
-                ->responseWithError();
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
         }
 
     }
@@ -106,9 +106,9 @@ class RoleController extends Controller
     {
         $permissions = Permission::limitPaginate();
         return $this->setStatusCode(200)
-            ->setMessage("Permission Fetch Successfully")
-            ->setResourceName('permissions')
-            ->responseWithCollection($permissions);
+                    ->setMessage("Permission Fetch Successfully")
+                    ->setResourceName('permissions')
+                    ->responseWithCollection($permissions);
     }
 
     public function assignPermission(Request $request)
@@ -118,18 +118,17 @@ class RoleController extends Controller
             return $this->responseWithNotAllowed();
         }
         $this->validate($request, [
-            'role' => 'required',
-            'permissions' => 'required',
+            'role'          => 'required',
+            'permissions'   => 'required',
         ]);
 
         $role = Role::find($request->role);
-        $permissions = Permission::whereIn('id', $request->permissions)
-            ->get();
+        $permissions = Permission::whereIn('id', $request->permissions)->get();
 
 
         $role->givePermissionTo($permissions);
         return $this->setStatusCode(200)
-            ->responseWithSuccess();
+                    ->responseWithSuccess();
     }
 
     public function removePermission(Request $request)
@@ -139,18 +138,16 @@ class RoleController extends Controller
         }
 
         $this->validate($request, [
-            'role' => 'required',
-            'permissions' => 'required',
+            'role'          => 'required',
+            'permissions'   => 'required',
         ]);
 
         $role = Role::find($request->role);
-        $permissions = Permission::whereIn('id', $request->permissions)
-            ->get();
-
+        $permissions = Permission::whereIn('id', $request->permissions)->get();
 
         $role->revokePermissionTo($permissions);
         return $this->setStatusCode(200)
-            ->responseWithSuccess();
+                    ->responseWithSuccess();
     }
 
     public function assignRole(Request $request)
@@ -169,6 +166,6 @@ class RoleController extends Controller
 
         $user->assignRole($role);
         return $this->setStatusCode(200)
-            ->responseWithSuccess();
+                    ->responseWithSuccess();
     }
 }

@@ -115,7 +115,7 @@ class CityController extends Controller
         try {
             $city->delete();
             return $this->setStatusCode(200)
-                ->setMessage("City Deleted Successfully");
+                        ->setMessage("City Deleted Successfully");
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
                         ->setMessage($exception->getMessage())
