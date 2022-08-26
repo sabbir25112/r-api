@@ -12,4 +12,15 @@ class Status
     const CANCELLED = 'cancelled';
     const DELIVERED = 'delivered';
     const COMPLETED = 'completed';
+
+    const TYPES = [
+        self::PLACED,
+        self::ACCEPTED,
+        self::PICKED_UP,
+        self::DELIVERING,
+        self::ON_COURIER,
+        self::CANCELLED,
+        self::DELIVERED,
+        self::COMPLETED,
+    ];
 }

@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $cities = City::limitPaginate();
@@ -21,12 +16,6 @@ class CityController extends Controller
                     ->responseWithCollection($cities);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         if (!auth()->user()->can('city.create')) {
@@ -48,35 +37,16 @@ class CityController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
-     */
     public function show(City $city)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
-     */
     public function edit(City $city)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, City $city)
     {
         if (!auth()->user()->can('city.update')) {
@@ -100,12 +70,6 @@ class CityController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\City  $city
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(City $city)
     {
         if (!auth()->user()->can('city.delete')) {
@@ -115,36 +79,12 @@ class CityController extends Controller
         try {
             $city->delete();
             return $this->setStatusCode(200)
-                        ->setMessage("City Deleted Successfully");
+                        ->setMessage("City Deleted Successfully")
+                        ->responseWithSuccess();
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
                         ->setMessage($exception->getMessage())
                         ->responseWithError();
         }
     }
-
-    public function showTrashed(City $city)
-    {
-        if (!auth()->user()->can('show.trashed.city')) {
-            return $this->responseWithNotAllowed();
-        }
-        $trashedCitites = $city->onlyTrashed()->limitPaginate();
-        return $this->setStatusCode(200)
-                    ->setMessage("Trashed Cities Fetch Successfully")
-                    ->setResourceName('trashed_cities')
-                    ->responseWithCollection($trashedCitites);
-    }
-
-    public function restoreAll(City $city)
-    {
-        if (!auth()->user()->can('city.restore')) {
-            return $this->responseWithNotAllowed();
-        }
-
-        $city->onlyTrashed()->restore();
-        return $this->setStatusCode(200)
-                    ->setMessage("All Cities Restored Successfully");
-    }
-
-
 }

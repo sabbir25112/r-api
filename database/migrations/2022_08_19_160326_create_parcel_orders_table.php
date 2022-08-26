@@ -24,6 +24,7 @@ class CreateParcelOrdersTable extends Migration
             $table->date('pickup_date')->nullable();
             $table->string('order_request')->nullable();
             $table->string('delivery_shift')->nullable();
+            $table->string('status')->default(\App\Order\Status::PLACED);
 
             $table->timestamps();
             $table->softDeletes();

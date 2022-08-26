@@ -14,32 +14,20 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $orders = Order::with('parcelOrders.parcels')->limitPaginate();
+        return $this->setStatusCode(200)
+            ->setMessage("Orders Fetch Successfully")
+            ->setResourceName('orders')
+            ->responseWithCollection($orders);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         if (!auth()->user()->can('order.create')) {
@@ -62,7 +50,7 @@ class OrderController extends Controller
             $PARCEL_ORDER_DOT. 'customer_name'      => 'required',
             $PARCEL_ORDER_DOT. 'city_id'            => 'required',
             $PARCEL_ORDER_DOT. 'delivery_shift'     => 'required|in:' . implode(',', DeliveryShift::SHIFTS),
-            $PARCEL_ORDER_DOT. "parcels"            => 'required',
+            $PARCEL_ORDER_DOT. 'parcels'            => 'required',
 
             // Parcel Validation
             $PARCEL_ORDER_DOT. $PARCEL_DOT. 'name'          => 'required',
@@ -122,12 +110,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
     public function show(Order $order)
     {
         $order_info = $order->with('parcelOrders.parcels')
@@ -139,43 +121,185 @@ class OrderController extends Controller
                     ->responseWithItem($order_info);
     }
 
-
-    public function showParcel(ParcelOrder $parcel_order, $parcel_order_id)
+    public function showParcelOrder(ParcelOrder $parcel_order, $parcel_order_id)
     {
-        return $parcel_order->with('parcels')->find($parcel_order_id);
+        $parcel_order_info = $parcel_order->with('parcels')
+                                        ->find($parcel_order_id);
+
+        return $this->setStatusCode(200)
+                    ->setMessage("Parcel Order Fetch Successfully")
+                    ->setResourceName('parcel_order_info')
+                    ->responseWithItem($parcel_order_info);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Order $order)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Order $order)
     {
-        //
+        if (!auth()->user()->can('order.update')) {
+            return $this->responseWithNotAllowed();
+        }
+
+        $this->validate($request, [
+            'service_id'    => 'required|integer|exists:services,id',
+            'merchant_id'   => 'required|integer|exists:merchants,id',
+            'pickup_date'   => 'required|date',
+            'payment_type'  => 'required|in:' . implode(',', PaymentType::TYPES),
+            'status'        => 'required|in:' . implode(',', Status::TYPES),
+        ]);
+
+        try {
+            $order->update(
+                [
+                    'service_id'    => $request->service_id,
+                    'pickup_date'   => Carbon::parse($request->pickup_date),
+                    'merchant_id'   => $request->merchant_id,
+                    'payment_type'  => $request->payment_type,
+                    'status'        => $request->status,
+                ]
+            );
+            return $this->setStatusCode(200)
+                        ->setMessage("Order Updated Successfully")
+                        ->setResourceName('order')
+                        ->responseWithItem($order);
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
+    public function updateParcelOrder(Request $request, $parcel_order_id)
+    {
+        if (!auth()->user()->can('order.update')) {
+            return $this->responseWithNotAllowed();
+        }
+
+        $parcel_order = ParcelOrder::find($parcel_order_id);
+
+        $this->validate($request, [
+            'customer_mobile'   => ['required', 'regex:/(^(01))[1|3-9]{1}(\d){8}$/'],
+            'customer_address'  => 'required',
+            'customer_name'     => 'required',
+            'city_id'           => 'required',
+            'pickup_date'       => 'required|date',
+            'delivery_shift'    => 'required|in:' . implode(',', DeliveryShift::SHIFTS),
+            'status'            => 'required|in:' . implode(',', Status::TYPES),
+        ]);
+        try {
+            $parcel_order->update(
+                [
+                    'customer_name'     => $request->customer_name,
+                    'customer_mobile'   => $request->customer_mobile,
+                    'customer_address'  => $request->customer_address,
+                    'city_id'           => $request->city_id,
+                    'pickup_date'       => $request->pickup_date,
+                    'order_request'     => $request->order_request,
+                    'delivery_shift'    => $request->delivery_shift,
+                    'status'            => $request->status,
+                ]
+            );
+            return $this->setStatusCode(200)
+                        ->setMessage("Parcel Order Updated Successfully")
+                        ->setResourceName('parcel_order')
+                        ->responseWithItem($parcel_order);
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
+    }
+
+    public function updateParcel(Request $request, $parcel_id)
+    {
+        if (!auth()->user()->can('order.update')) {
+            return $this->responseWithNotAllowed();
+        }
+
+        $parcel = Parcel::find($parcel_id);
+
+        $this->validate($request, [
+            'name'      => 'required',
+            'quantity'  => 'required',
+            'cod_amount'=> 'required|integer',
+            'status'    => 'required|in:' . implode(',', Status::TYPES),
+        ]);
+
+        try {
+            $parcel->update(
+                [
+                    'name'      => $request->name,
+                    'quantity'  => $request->quantity,
+                    'cod_amount'=> $request->cod_amount,
+                    'status'    => $request->status,
+                ]
+            );
+            return $this->setStatusCode(200)
+                        ->setMessage("Parcel Updated Successfully")
+                        ->setResourceName('parcel')
+                        ->responseWithItem($parcel);
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
+    }
+
     public function destroy(Order $order)
     {
-        //
+        if(!auth()->user()->can('order.delete')) {
+            return $this->responseWithNotAllowed();
+        }
+
+        try {
+            $order->delete();
+            return $this->setStatusCode(200)
+                        ->setMessage("Order Deleted Successfully")
+                        ->responseWithSuccess();
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
     }
+
+    public function destroyParcelOrder($parcel_order_id)
+    {
+        if(!auth()->user()->can('order.delete')) {
+            return $this->responseWithNotAllowed();
+        }
+
+        try {
+            ParcelOrder::find($parcel_order_id)->delete();
+            return $this->setStatusCode(200)
+                        ->setMessage("Parcel Order Deleted Successfully")
+                        ->responseWithSuccess();
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
+    }
+
+    public function destroyParcel($parcel_id)
+    {
+        if(!auth()->user()->can('order.delete')) {
+            return $this->responseWithNotAllowed();
+        }
+
+        try {
+            Parcel::find($parcel_id)->delete();
+            return $this->setStatusCode(200)
+                        ->setMessage("Parcel Deleted Successfully")
+                        ->responseWithSuccess();
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
+    }
+
 }

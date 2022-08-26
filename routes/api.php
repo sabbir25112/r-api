@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function(){
     return response()->json([
-        "status" => 200,
-        "message" => "we are alive",
+        "status"    => 200,
+        "message"   => "we are alive",
     ]);
 });
 
@@ -25,25 +25,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::group([
-    'middleware' => ['api'],
-    'namespace' => 'App\Http\Controllers',
+    'middleware'    => ['api'],
+    'namespace'     => 'App\Http\Controllers',
 ], function ($router) {
     Route::post('auth/login', 'AuthController@login');
 });
 
 Route::group([
-    'middleware' => ['api', 'auth'],
-    'namespace' => 'App\Http\Controllers',
+    'middleware'    => ['api', 'auth'],
+    'namespace'     => 'App\Http\Controllers',
 ], function ($router) {
 
-    Route::group(['prefix' => 'auth'], function () {
+    Route::group([
+        'prefix' => 'auth'
+    ], function () {
 
         Route::post('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
         Route::get('me', 'AuthController@me');
     });
-
-
 
     Route::resource('roles', 'RoleController');
     Route::get('permissions' , 'RoleController@permissions');
@@ -53,14 +53,15 @@ Route::group([
 
 
     Route::resource('city', 'CityController');
-    Route::get('city-restore', 'CityController@restoreAll');
-    Route::get('trashed-city', 'CityController@showTrashed');
 
     Route::resource('zone', 'ZoneController');
 
     Route::resource('merchant', 'MerchantController');
 
     Route::resource('order', 'OrderController');
-    Route::get('parcel-order/{parcel_order_id}', 'OrderController@showParcel');
-
+    Route::get('parcel-order/{parcel_order_id}', 'OrderController@showParcelOrder');
+    Route::put('parcel-order/{parcel_order_id}', 'OrderController@updateParcelOrder');
+    Route::delete('parcel-order/{parcel_order_id}', 'OrderController@destroyParcelOrder');
+    Route::put('parcel/{parcel_id}', 'OrderController@updateParcel');
+    Route::delete('parcel/{parcel_id}', 'OrderController@destroyParcel');
 });

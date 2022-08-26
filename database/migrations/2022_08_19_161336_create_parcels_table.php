@@ -20,6 +20,7 @@ class CreateParcelsTable extends Migration
             $table->string('name')->nullable();
             $table->string('quantity');
             $table->string('cod_amount');
+            $table->string('status')->default(\App\Order\Status::PLACED);
 
             $table->timestamps();
             $table->softDeletes();

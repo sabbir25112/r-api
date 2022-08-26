@@ -15,6 +15,7 @@ class Parcel extends Model
         'name',
         'quantity',
         'cod_amount',
+        'status',
     ];
 
     public function parcelOrder()

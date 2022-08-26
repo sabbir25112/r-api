@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class MerchantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $merchants = Merchant::limitPaginate();
@@ -21,22 +16,11 @@ class MerchantController extends Controller
                     ->responseWithCollection($merchants);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         if (!auth()->user()->can('merchant.create')) {
@@ -64,35 +48,16 @@ class MerchantController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Merchant  $merchant
-     * @return \Illuminate\Http\Response
-     */
     public function show(Merchant $merchant)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Merchant  $merchant
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Merchant $merchant)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Merchant  $merchant
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Merchant $merchant)
     {
         if (!auth()->user()->can('merchant.update')) {
@@ -122,12 +87,6 @@ class MerchantController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *+ 0.
-     * @param  \App\Models\Merchant  $merchant
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Merchant $merchant)
     {
         if (!auth()->user()->can('merchant.delete')) {
@@ -137,7 +96,8 @@ class MerchantController extends Controller
         try {
             $merchant->delete();
             return $this->setStatusCode(200)
-                        ->setMessage("Merchant Deleted Successfully");
+                        ->setMessage("Merchant Deleted Successfully")
+                        ->responseWithSuccess();
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
                         ->setMessage($exception->getMessage())

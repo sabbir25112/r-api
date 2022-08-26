@@ -19,6 +19,7 @@ class ParcelOrder extends Model
         'pickup_date',
         'order_request',
         'delivery_shift',
+        'status',
     ];
 
     public  function order()
