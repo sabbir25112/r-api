@@ -148,8 +148,13 @@ class OrderController extends Controller
             'merchant_id'   => 'required|integer|exists:merchants,id',
             'pickup_date'   => 'required|date',
             'payment_type'  => 'required|in:' . implode(',', PaymentType::TYPES),
-            'status'        => 'required|in:' . implode(',', Status::TYPES),
         ]);
+        if($request->status)
+        {
+            return $this->setStatusCode(400)
+                        ->setMessage("status cant be changed from here")
+                        ->responseWithError();
+        }
 
         try {
             $order->update(
@@ -158,7 +163,6 @@ class OrderController extends Controller
                     'pickup_date'   => Carbon::parse($request->pickup_date),
                     'merchant_id'   => $request->merchant_id,
                     'payment_type'  => $request->payment_type,
-                    'status'        => $request->status,
                 ]
             );
             return $this->setStatusCode(200)
@@ -187,8 +191,14 @@ class OrderController extends Controller
             'city_id'           => 'required',
             'pickup_date'       => 'required|date',
             'delivery_shift'    => 'required|in:' . implode(',', DeliveryShift::SHIFTS),
-            'status'            => 'required|in:' . implode(',', Status::TYPES),
         ]);
+        if($request->status)
+        {
+            return $this->setStatusCode(400)
+                        ->setMessage("status cant be changed from here")
+                        ->responseWithError();
+        }
+
         try {
             $parcel_order->update(
                 [
@@ -199,7 +209,6 @@ class OrderController extends Controller
                     'pickup_date'       => $request->pickup_date,
                     'order_request'     => $request->order_request,
                     'delivery_shift'    => $request->delivery_shift,
-                    'status'            => $request->status,
                 ]
             );
             return $this->setStatusCode(200)
@@ -225,8 +234,13 @@ class OrderController extends Controller
             'name'      => 'required',
             'quantity'  => 'required',
             'cod_amount'=> 'required|integer',
-            'status'    => 'required|in:' . implode(',', Status::TYPES),
         ]);
+        if($request->status)
+        {
+            return $this->setStatusCode(400)
+                        ->setMessage("status cant be changed from here")
+                        ->responseWithError();
+        }
 
         try {
             $parcel->update(
@@ -234,7 +248,6 @@ class OrderController extends Controller
                     'name'      => $request->name,
                     'quantity'  => $request->quantity,
                     'cod_amount'=> $request->cod_amount,
-                    'status'    => $request->status,
                 ]
             );
             return $this->setStatusCode(200)
