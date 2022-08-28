@@ -50,14 +50,6 @@ class PermissionSeeder extends Seeder
                 'name' => 'city.delete',
                 'guard_name' => 'api',
             ],
-            [
-                'name' => 'city.restore',
-                'guard_name' => 'api',
-            ],
-            [
-                'name' => 'show.trashed.city',
-                'guard_name' => 'api',
-            ],
 
             [
                 'name' => 'zone.create',
@@ -98,6 +90,110 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'api',
             ],
 
+            [
+                'name' => 'parcel.order.update',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'parcel.order.delete',
+                'guard_name' => 'api',
+            ],
+
+            [
+                'name' => 'parcel.update',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'parcel.delete',
+                'guard_name' => 'api',
+            ],
+
+            [
+                'name' => 'change.order.status.to.accepted',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.order.status.to.picked_up',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.order.status.to.delivering',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.order.status.to.on_courier',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.order.status.to.cancelled',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.order.status.to.delivered',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.order.status.to.completed',
+                'guard_name' => 'api',
+            ],
+
+            [
+                'name' => 'change.parcel.order.status.to.accepted',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.order.status.to.picked_up',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.order.status.to.delivering',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.order.status.to.on_courier',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.order.status.to.cancelled',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.order.status.to.delivered',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.order.status.to.completed',
+                'guard_name' => 'api',
+            ],
+
+            [
+                'name' => 'change.parcel.status.to.accepted',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.status.to.picked_up',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.status.to.delivering',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.status.to.on_courier',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.status.to.cancelled',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.status.to.delivered',
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'change.parcel.status.to.completed',
+                'guard_name' => 'api',
+            ],
         ]);
 
     }

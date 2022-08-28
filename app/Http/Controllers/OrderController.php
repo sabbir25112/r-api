@@ -178,7 +178,7 @@ class OrderController extends Controller
 
     public function updateParcelOrder(Request $request, $parcel_order_id)
     {
-        if (!auth()->user()->can('order.update')) {
+        if (!auth()->user()->can('parcel.order.update')) {
             return $this->responseWithNotAllowed();
         }
 
@@ -224,7 +224,7 @@ class OrderController extends Controller
 
     public function updateParcel(Request $request, $parcel_id)
     {
-        if (!auth()->user()->can('order.update')) {
+        if (!auth()->user()->can('parcel.update')) {
             return $this->responseWithNotAllowed();
         }
 
@@ -281,7 +281,7 @@ class OrderController extends Controller
 
     public function destroyParcelOrder($parcel_order_id)
     {
-        if(!auth()->user()->can('order.delete')) {
+        if(!auth()->user()->can('parcel.order.delete')) {
             return $this->responseWithNotAllowed();
         }
 
@@ -299,7 +299,7 @@ class OrderController extends Controller
 
     public function destroyParcel($parcel_id)
     {
-        if(!auth()->user()->can('order.delete')) {
+        if(!auth()->user()->can('parcel.delete')) {
             return $this->responseWithNotAllowed();
         }
 

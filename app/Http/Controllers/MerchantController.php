@@ -27,7 +27,8 @@ class MerchantController extends Controller
             return $this->responseWithNotAllowed();
         }
         $this->validate($request, [
-            'name' => 'required',
+            'name'      => 'required',
+            'mobile'    => ['required', 'regex:/(^(01))[1|3-9]{1}(\d){8}$/'],
         ]);
         try {
             $merchant = Merchant::create(
