@@ -45,6 +45,8 @@ Route::group([
         Route::get('me', 'AuthController@me');
     });
 
+    Route::resource('user', 'UserController');
+
     Route::resource('roles', 'RoleController');
     Route::get('permissions' , 'RoleController@permissions');
     Route::post('assign-permission', 'RoleController@assignPermission');

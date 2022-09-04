@@ -2,21 +2,30 @@
 
 namespace App\Models;
 
+use App\Traits\CommonScopeTrait;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasPermissions;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasPermissions;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions, SoftDeletes, CommonScopeTrait;
 
+    const DELIVERY_AGENT = 0;
     const SUPERADMIN = 1;
+    const MERCHANT = 2;
+
+    const TYPES = [
+        self::DELIVERY_AGENT,
+        self::SUPERADMIN,
+        self::MERCHANT,
+    ];
 
     /**
      * The attributes that are mass assignable.
