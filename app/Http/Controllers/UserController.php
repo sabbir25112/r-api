@@ -48,7 +48,7 @@ class UserController extends Controller
             'email'         => 'required|email|unique:users,email',
             'password'      => 'required|min:6',
             'user_type'     => 'required|integer|in:' . implode(',', User::TYPES),
-            'merchant_id'   => 'required_if:user_type,==,2|integer|exists:merchants,id'
+            'merchant_id'   => 'required_if:user_type,==,2|integer|exists:merchants,id' //here 2 for Merchant
         ]);
         try {
             $user = User::create(
