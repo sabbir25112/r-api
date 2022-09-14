@@ -7,6 +7,7 @@ return [
         'picked_up'     => ['delivering', 'cancelled'],
         'delivering'    => ['on_courier', 'cancelled'],
         'on_courier'    => ['delivered', 'cancelled'],
-        'delivered'     => ['completed']
+        'delivered'     => ['completed'],
+        'cancelled'     => [],
     ]
 ];

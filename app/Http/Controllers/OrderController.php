@@ -11,6 +11,7 @@ use App\Order\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Rapido\StatusFlow;
 
 class OrderController extends Controller
 {
@@ -79,7 +80,7 @@ class OrderController extends Controller
                     'customer_mobile'       => $request_parcel_order['customer_mobile'],
                     'customer_address'      => $request_parcel_order['customer_address'],
                     'city_id'               => $request_parcel_order['city_id'],
-                    'pickup_date'           => $request->pickup_date,
+                    'pickup_date'           => Carbon::parse($request->pickup_date),
                     'order_request'         => $request_parcel_order['order_request'],
                     'delivery_shift'        => $request_parcel_order['delivery_shift'],
                 ]);
@@ -206,7 +207,7 @@ class OrderController extends Controller
                     'customer_mobile'   => $request->customer_mobile,
                     'customer_address'  => $request->customer_address,
                     'city_id'           => $request->city_id,
-                    'pickup_date'       => $request->pickup_date,
+                    'pickup_date'       => Carbon::parse($request->pickup_date),
                     'order_request'     => $request->order_request,
                     'delivery_shift'    => $request->delivery_shift,
                 ]
@@ -253,6 +254,111 @@ class OrderController extends Controller
             return $this->setStatusCode(200)
                         ->setMessage("Parcel Updated Successfully")
                         ->setResourceName('parcel')
+                        ->responseWithItem($parcel);
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
+    }
+
+    public function updateOrderStatus(Request $request, $order_id)
+    {
+        $this->validate($request, [
+            'status' => 'required|in:' . implode(',', Status::TYPES),
+        ]);
+
+        $order = Order::find($order_id);
+        $status = $request->status;
+
+        $statusFlow = new StatusFlow();
+        $result = $statusFlow->canChangeOrderStatus($order , $status);
+        
+        if(!$result['status']) {
+            return $this->setStatusCode(400)
+                        ->setMessage($result['message'])
+                        ->responseWithError();
+        }
+
+        try {
+            $order->update(
+                [
+                    'status'    => $status,
+                ]
+            );
+            return $this->setStatusCode(200)
+                        ->setMessage("Order Status Updated Successfully")
+                        ->setResourceName('order_status')
+                        ->responseWithItem($order);
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
+    }
+
+    public function updateParcelOrderStatus(Request $request, $parcel_order_id)
+    {
+        $this->validate($request, [
+            'status' => 'required|in:' . implode(',', Status::TYPES),
+        ]);
+
+        $parcel_order = ParcelOrder::find($parcel_order_id);
+        $status = $request->status;
+
+        $statusFlow = new StatusFlow();
+        $result = $statusFlow->canChangeParcelOrderStatus($parcel_order , $status);
+        
+        if(!$result['status']) {
+            return $this->setStatusCode(400)
+                        ->setMessage($result['message'])
+                        ->responseWithError();
+        }
+
+        try {
+            $parcel_order->update(
+                [
+                    'status'    => $status,
+                ]
+            );
+            return $this->setStatusCode(200)
+                        ->setMessage("Parcel Order Status Updated Successfully")
+                        ->setResourceName('parcel_order_status')
+                        ->responseWithItem($parcel_order);
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
+    }
+
+    public function updateParcelStatus(Request $request, $parcel_id)
+    {
+        $this->validate($request, [
+            'status' => 'required|in:' . implode(',', Status::TYPES),
+        ]);
+
+        $parcel = Parcel::find($parcel_id);
+        $status = $request->status;
+
+        $statusFlow = new StatusFlow();
+        $result = $statusFlow->canChangeParcelStatus($parcel , $status);
+        
+        if(!$result['status']) {
+            return $this->setStatusCode(400)
+                        ->setMessage($result['message'])
+                        ->responseWithError();
+        }
+
+        try {
+            $parcel->update(
+                [
+                    'status'    => $status,
+                ]
+            );
+            return $this->setStatusCode(200)
+                        ->setMessage("Parcel Status Updated Successfully")
+                        ->setResourceName('parcel_status')
                         ->responseWithItem($parcel);
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)

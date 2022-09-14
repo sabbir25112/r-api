@@ -66,4 +66,7 @@ Route::group([
     Route::delete('parcel-order/{parcel_order_id}', 'OrderController@destroyParcelOrder');
     Route::put('parcel/{parcel_id}', 'OrderController@updateParcel');
     Route::delete('parcel/{parcel_id}', 'OrderController@destroyParcel');
+    Route::put('order-status/{order_id}', 'OrderController@updateOrderStatus');
+    Route::put('parcel-order-status/{parcel_order_id}', 'OrderController@updateParcelOrderStatus');
+    Route::put('parcel-status/{parcel_id}', 'OrderController@updateParcelStatus');
 });
