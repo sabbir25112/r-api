@@ -69,4 +69,5 @@ Route::group([
     Route::put('order-status/{order_id}', 'OrderController@updateOrderStatus');
     Route::put('parcel-order-status/{parcel_order_id}', 'OrderController@updateParcelOrderStatus');
     Route::put('parcel-status/{parcel_id}', 'OrderController@updateParcelStatus');
+    Route::put('status', 'OrderController@updateStatus');
 });

@@ -114,7 +114,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order_info = $order->with('parcelOrders.parcels')
-                            ->get();
+                            ->find($order);
 
         return $this->setStatusCode(200)
                     ->setMessage("Order Fetch Successfully")
@@ -360,6 +360,43 @@ class OrderController extends Controller
                         ->setMessage("Parcel Status Updated Successfully")
                         ->setResourceName('parcel_status')
                         ->responseWithItem($parcel);
+        } catch (\Exception $exception) {
+            return $this->setStatusCode(500)
+                        ->setMessage($exception->getMessage())
+                        ->responseWithError();
+        }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $this->validate($request, [
+            'status'            => 'required|in:' . implode(',', Status::TYPES),
+        ]);
+
+        $status         = $request->status;
+        $order          = Order::find($request->order["id"]);
+
+        $statusFlow = new StatusFlow();
+        $result = $statusFlow->canChangeStatus($order , $status);
+        
+        if(!$result['status']) {
+            return $this->setStatusCode(400)
+                        ->setMessage($result['message'])
+                        ->responseWithError();
+        }
+
+        dd($status, $result);
+
+        try {
+            $order->update(
+                [
+                    'status'    => $status,
+                ]
+            );
+            return $this->setStatusCode(200)
+                        ->setMessage("Status Updated Successfully")
+                        ->setResourceName('status')
+                        ->responseWithItem($order);
         } catch (\Exception $exception) {
             return $this->setStatusCode(500)
                         ->setMessage($exception->getMessage())
