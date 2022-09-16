@@ -273,7 +273,7 @@ class OrderController extends Controller
 
         $statusFlow = new StatusFlow();
         $result = $statusFlow->canChangeOrderStatus($order , $status);
-        
+
         if(!$result['status']) {
             return $this->setStatusCode(400)
                         ->setMessage($result['message'])
@@ -308,7 +308,7 @@ class OrderController extends Controller
 
         $statusFlow = new StatusFlow();
         $result = $statusFlow->canChangeParcelOrderStatus($parcel_order , $status);
-        
+
         if(!$result['status']) {
             return $this->setStatusCode(400)
                         ->setMessage($result['message'])
@@ -343,7 +343,7 @@ class OrderController extends Controller
 
         $statusFlow = new StatusFlow();
         $result = $statusFlow->canChangeParcelStatus($parcel , $status);
-        
+
         if(!$result['status']) {
             return $this->setStatusCode(400)
                         ->setMessage($result['message'])
@@ -367,37 +367,98 @@ class OrderController extends Controller
         }
     }
 
-    public function updateStatus(Request $request)
+    public function updateOrderData(Request $request, $order_id)
     {
-        $this->validate($request, [
-            'status'            => 'required|in:' . implode(',', Status::TYPES),
-        ]);
-
-        $status         = $request->status;
-        $order          = Order::find($request->order["id"]);
-
-        $statusFlow = new StatusFlow();
-        $result = $statusFlow->canChangeStatus($order , $status);
-        
-        if(!$result['status']) {
+        if (!auth()->user()->can('order.update')) {
+            return $this->responseWithNotAllowed();
+        }
+        if($request->status)
+        {
             return $this->setStatusCode(400)
-                        ->setMessage($result['message'])
-                        ->responseWithError();
+                ->setMessage("status cant be changed from here")
+                ->responseWithError();
         }
 
-        dd($status, $result);
+        $PARCEL_ORDER_DOT   = 'parcel_orders.*.';
+        $PARCEL_DOT         = 'parcels.*.';
 
+        $this->validate($request, [
+            // Order Validation
+            'service_id'    => 'required|integer|exists:services,id',
+            'merchant_id'   => 'required|integer|exists:merchants,id',
+            'pickup_date'   => 'required|date',
+            'payment_type'  => 'required|in:' . implode(',', PaymentType::TYPES),
+
+            // Parcel Order Validation
+            $PARCEL_ORDER_DOT. 'customer_mobile'    => ['required', 'regex:/(^(01))[1|3-9]{1}(\d){8}$/'],
+            $PARCEL_ORDER_DOT. 'customer_address'   => 'required',
+            $PARCEL_ORDER_DOT. 'customer_name'      => 'required',
+            $PARCEL_ORDER_DOT. 'city_id'            => 'required',
+            $PARCEL_ORDER_DOT. 'delivery_shift'     => 'required|in:' . implode(',', DeliveryShift::SHIFTS),
+            $PARCEL_ORDER_DOT. 'pickup_date'        => 'required|date',
+            $PARCEL_ORDER_DOT. 'parcels'            => 'required',
+
+            // Parcel Validation
+            $PARCEL_ORDER_DOT. $PARCEL_DOT. 'name'          => 'required',
+            $PARCEL_ORDER_DOT. $PARCEL_DOT. 'quantity'      => 'required',
+            $PARCEL_ORDER_DOT. $PARCEL_DOT. 'cod_amount'    => 'required|integer',
+
+        ]);
+
+        DB::beginTransaction();
         try {
-            $order->update(
+            $order = Order::find($order_id)->update(
                 [
-                    'status'    => $status,
+                    'service_id'    => $request->service_id,
+                    'merchant_id'   => $request->merchant_id,
+                    'payment_type'  => $request->payment_type,
+                    'pickup_date'   => Carbon::parse($request->pickup_date),
                 ]
             );
+            foreach ($request->parcel_orders as $request_parcel_order)
+            {
+                $parcel_order_data = [
+                    'order_id'          => $order_id,
+                    'customer_name'     => $request_parcel_order['customer_name'],
+                    'customer_mobile'   => $request_parcel_order['customer_mobile'],
+                    'customer_address'  => $request_parcel_order['customer_address'],
+                    'city_id'           => $request_parcel_order['city_id'],
+                    'pickup_date'       => Carbon::parse($request_parcel_order['pickup_date']),
+                    'order_request'     => $request_parcel_order['order_request'],
+                    'delivery_shift'    => $request_parcel_order['delivery_shift'],
+                ];
+                if(!isset($request_parcel_order['id'])) {
+                    $parcel_order = ParcelOrder::create($parcel_order_data);
+                    $parcel_order_id = $parcel_order->id;
+                }
+                else {
+                    $parcel_order_id = $request_parcel_order['id'];
+                    ParcelOrder::find($parcel_order_id)->update($parcel_order_data);
+                }
+
+                foreach ($request_parcel_order['parcels'] as $request_parcel)
+                {
+                    $parcel_data = [
+                        'parcel_order_id'   => $parcel_order_id,
+                        'name'              => $request_parcel['name'],
+                        'quantity'          => $request_parcel['quantity'],
+                        'cod_amount'        => $request_parcel['cod_amount'],
+                    ];
+
+                    if(!isset($request_parcel['id']))
+                        Parcel::create($parcel_data);
+                    else
+                        Parcel::find($request_parcel['id'])->update($parcel_data);
+                }
+            }
+
+            DB::commit();
             return $this->setStatusCode(200)
-                        ->setMessage("Status Updated Successfully")
-                        ->setResourceName('status')
+                        ->setMessage("Order Updated Successfully")
+                        ->setResourceName('order')
                         ->responseWithItem($order);
         } catch (\Exception $exception) {
+            DB::rollBack();
             return $this->setStatusCode(500)
                         ->setMessage($exception->getMessage())
                         ->responseWithError();
