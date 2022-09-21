@@ -9,7 +9,8 @@ class MerchantController extends Controller
 {
     public function index()
     {
-        $merchants = Merchant::limitPaginate();
+        $merchants = Merchant::with('orders.parcelOrders.parcels')
+                            ->limitPaginate();
         return $this->setStatusCode(200)
                     ->setMessage("Merchants Fetch Successfully")
                     ->setResourceName('merchants')
@@ -49,9 +50,14 @@ class MerchantController extends Controller
         }
     }
 
-    public function show(Merchant $merchant)
+    public function show($id)
     {
-        //
+        $merchant = Merchant::with('orders.parcelOrders.parcels')
+                            ->find($id);
+        return $this->setStatusCode(200)
+                    ->setMessage("Merchant Fetch Successfully")
+                    ->setResourceName('merchant')
+                    ->responseWithCollection($merchant);
     }
 
     public function edit(Merchant $merchant)

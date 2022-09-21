@@ -48,7 +48,12 @@ class RoleController extends Controller
 
     public function show($id)
     {
-        //
+        $role = Role::with('permissions')
+                    ->find($id);
+        return $this->setStatusCode(200)
+                    ->setMessage("Role Fetch Successfully")
+                    ->setResourceName('role')
+                    ->responseWithCollection($role);
     }
 
     public function edit($id)

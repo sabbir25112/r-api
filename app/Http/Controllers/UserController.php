@@ -76,9 +76,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return $this->setStatusCode(200)
+                    ->setMessage("User Fetch Successfully")
+                    ->setResourceName('user')
+                    ->responseWithCollection($user);
     }
 
     /**

@@ -47,7 +47,7 @@ Route::group([
 
     Route::resource('user', 'UserController');
 
-    Route::resource('roles', 'RoleController');
+    Route::resource('role', 'RoleController');
     Route::get('permissions' , 'RoleController@permissions');
     Route::post('assign-permission', 'RoleController@assignPermission');
     Route::post('remove-permission', 'RoleController@removePermission');

@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Zone;
 use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
     public function index()
     {
-        $cities = City::limitPaginate();
+        $cities = City::with('zones')->limitPaginate();
         return $this->setStatusCode(200)
                     ->setMessage("Cities Fetch Successfully")
                     ->setResourceName('cities')
@@ -37,9 +38,14 @@ class CityController extends Controller
         }
     }
 
-    public function show(City $city)
+    public function show($id)
     {
-        //
+        $city = City::with('zones')
+                    ->find($id);
+        return $this->setStatusCode(200)
+                    ->setMessage("City Fetch Successfully")
+                    ->setResourceName('city')
+                    ->responseWithCollection($city);
     }
 
     public function edit(City $city)

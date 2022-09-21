@@ -28,7 +28,7 @@ class ZoneController extends Controller
         }
         $this->validate($request, [
             'name'      => 'required',
-            'city_id'   => 'required',
+            'city_id'   => 'required|integer|exists:cities,id',
         ]);
         try {
             $zone = Zone::create([
@@ -48,7 +48,10 @@ class ZoneController extends Controller
 
     public function show(Zone $zone)
     {
-        //
+        return $this->setStatusCode(200)
+                    ->setMessage("Zone Fetch Successfully")
+                    ->setResourceName('zone')
+                    ->responseWithCollection($zone);
     }
 
     public function edit(Zone $zone)
@@ -64,7 +67,7 @@ class ZoneController extends Controller
 
         $this->validate($request, [
             'name'      => 'required',
-            'city_id'   => 'required',
+            'city_id'   => 'required|integer|exists:cities,id',
         ]);
 
         try {

@@ -111,10 +111,10 @@ class OrderController extends Controller
         }
     }
 
-    public function show(Order $order)
+    public function show($id)
     {
-        $order_info = $order->with('parcelOrders.parcels')
-                            ->find($order);
+        $order_info = Order::with('parcelOrders.parcels')
+                            ->find($id);
 
         return $this->setStatusCode(200)
                     ->setMessage("Order Fetch Successfully")
